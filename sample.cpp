@@ -8,11 +8,23 @@ int main(){
 	cout.tie(0);
 	ll t;
 	cin >> t;
-	for(ll i=1; i<=t; i++){
-		ll ns = i*i, n2 = (ns*(ns-1))/2;
-		if(i > 2)
-			n2 -= 4*(i-1)*(i-2);
-		cout << n2 << "\n";
+	while(t--){
+		ll x, y;
+		cin >> x >> y;
+		if(y == x)
+			cout << (x*x) - y + 1 << "\n";
+		else if(y > x){
+			if(y&1)
+				cout << (y*y) - (x) + 1 << "\n";
+			else
+				cout << ((y-1)*(y-1)) + (x) << "\n";
+		}
+		else{
+			if(!(x&1))
+				cout << (x*x) - (y) + 1 << "\n";
+			else
+				cout << ((x-1)*(x-1)) + (y) << "\n";
+		}
 	}
 	return 0;
 }

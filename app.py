@@ -10,28 +10,44 @@ def index():
 
 @app.route('/process_form', methods=['POST'])
 def process_form():
-    prob = request.form.get('choice')
-    subprocess.run(["g++.exe", "-std=c++17", "sample.cpp", "-o", "sample"], encoding="utf-8")
+    prob = request.form.get('problem')
+    lang = request.form.get('language')
     correct = 0
-    for i in range(numprobs[prob]):
-        inputs = []
-        outputs = []
-        with open(f'./tests/input/{prob}/input_{i+1}.txt') as f:
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-                inputs.append(line.strip())
-        with open(f'./tests/output/{prob}/output_{i+1}.txt') as f:
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-                outputs.append(line.strip())
-        test_out = subprocess.run(['sample'], capture_output=True, input=' '.join(inputs), encoding="utf-8")
-        correct += (test_out.stdout == '\n'.join(outputs)+'\n')
+    if lang == 'cpp':
+        subprocess.run(["g++.exe", "-std=c++17", "sample.cpp", "-o", "sample"], encoding="utf-8")
+        for i in range(numprobs[prob]):
+            inputs = []
+            outputs = []
+            with open(f'./tests/input/{prob}/input_{i+1}.txt') as f:
+                while True:
+                    line = f.readline()
+                    if not line:
+                        break
+                    inputs.append(line.strip())
+            with open(f'./tests/output/{prob}/output_{i+1}.txt') as f:
+                while True:
+                    line = f.readline()
+                    if not line:
+                        break
+                    outputs.append(line.strip())
+            test_out = subprocess.run(['sample'], capture_output=True, input=' '.join(inputs), encoding="utf-8")
+            correct += (test_out.stdout == '\n'.join(outputs)+'\n')
+    else:
+        command = ["python", "sample.py"]
+        for i in range(numprobs[prob]):
+            outputs = []
+            with open(f'./tests/input/{prob}/input_{i+1}.txt', "r") as input_file:
+                output = subprocess.check_output(command, stdin=input_file, universal_newlines=True)
 
-    return f'Correct Answers: {correct}/{numprobs[prob]}'
+            with open(f'./tests/output/{prob}/output_{i+1}.txt') as f:
+                while True:
+                    line = f.readline()
+                    if not line:
+                        break
+                    outputs.append(line.strip())
+            correct += (output == '\n'.join(outputs)+'\n')
+
+    return render_template('answers.html', correct=correct, numprobs=numprobs[prob])
 
 if __name__ == '__main__':
     app.run(debug=True)

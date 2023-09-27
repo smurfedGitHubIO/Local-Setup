@@ -1,0 +1,7 @@
+x = int(input())
+print(x+1)
+y = int(input())
+print(y+1)
+z = input()
+a = input()
+print(z, a)

@@ -1,6 +1,7 @@
 if __name__ == "__main__":
 	for _ in range(int(input())):
-		x, y = [int(val) for val in input().split()]
+		x = int(input())
+		y = int(input())
 		if x == y:
 			print((x*x) - y + 1)
 		elif y > x:
